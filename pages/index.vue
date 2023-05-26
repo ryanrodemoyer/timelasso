@@ -1,18 +1,6 @@
 <template>
   <div>
     <div>
-      <button @click="clearSelections">clear selections</button>
-      clear cells that are purple and red
-    </div>
-    <div>
-      <button @click="clearCache">clear cache</button> clear local storage
-    </div>
-    <div>
-      <button @click="reset">reset</button> reset everything to default values
-    </div>
-    <div><button @click="undoLast">undo</button> undo the last change</div>
-    <div>current selection (debug): {{ ui.selection }}</div>
-    <div>
       <h2>
         lasso (click and drag, or just click!) to create a group of time cells
         and then add a description
@@ -49,6 +37,22 @@
         >
           <div style="flex-basis: 100%; margin-bottom: 10px">
             <div style="margin-bottom: 2px">
+              <div>
+                <button @click="clearSelections">clear selections</button>
+                clear cells that are purple and red
+              </div>
+              <div>
+                <button @click="clearCache">clear cache</button> clear local
+                storage
+              </div>
+              <div>
+                <button @click="reset">reset</button> reset everything to
+                default values
+              </div>
+              <div>
+                <button @click="undoLast">undo</button> undo the last change
+              </div>
+              <div>current selection (debug): {{ ui.selection }}</div>
               <select
                 style="width: 100%"
                 @change="ui.message = $event.target.value"
@@ -63,6 +67,7 @@
                 </option>
               </select>
             </div>
+
             <div>
               <textarea
                 placeholder="your message goes here"
@@ -250,6 +255,7 @@ export default Vue.extend({
         return {
           backgroundColor: rgb,
           borderColor: rgb,
+          color: 'black',
         }
       }
     },

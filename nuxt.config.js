@@ -7,7 +7,7 @@ export default {
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'timelasso2',
+    title: 'Time Lasso',
     htmlAttrs: {
       lang: 'en',
     },

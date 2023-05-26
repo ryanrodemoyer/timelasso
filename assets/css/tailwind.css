@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-slate-800;
+  @apply text-slate-400;
+  @apply font-sans;
+}
+
+textarea {
+  @apply bg-slate-800;
+  @apply text-slate-400;
+}
+
+select {
+  @apply bg-slate-800;
+  @apply text-slate-400;
+}
+
+button {
+  @apply rounded-none;
+  @apply bg-slate-400;
+  @apply text-slate-800;
+  @apply shadow-inner;
+  @apply border-none;
+}
