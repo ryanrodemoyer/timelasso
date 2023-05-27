@@ -11,15 +11,16 @@
     </div>
     <!-- <pre>{{ ui }}</pre> -->
 
-    <div class="flex-container">
-      <div class="flex-column">
+    <!-- <div class="grid grid-cols-1 sm:grid-cols-2"> -->
+    <div class="flex">
+      <div class="flex-1 p-2.5">
         <div
           v-for="(time, i) in config.times"
           :key="i"
           @mousedown="mousedown($event, i)"
           @mouseup="mouseup($event, i)"
           @mouseover="mouseover($event, i)"
-          class="cell"
+          class="m-1 p-1 w-full border border-black rounded-lg border-solid"
           :style="getRGB(i, getMessage(i))"
           :class="{
             highlight: ui.selection.includes(i),
@@ -31,12 +32,10 @@
           {{ time }} ({{ i }}) - {{ getMessage(i) }}
         </div>
       </div>
-      <div class="flex-column">
-        <div
-          style="display: flex; flex-wrap: wrap; position: fixed; padding: 15px"
-        >
-          <div style="flex-basis: 100%; margin-bottom: 10px">
-            <div style="margin-bottom: 2px">
+      <div class="flex-1">
+        <div class="flex flex-wrap fixed p-4">
+          <div class="basis-full mb-2.5">
+            <div class="mb-0.5">
               <div>
                 <button @click="clearSelections">clear selections</button>
                 clear cells that are purple and red
@@ -53,10 +52,7 @@
                 <button @click="undoLast">undo</button> undo the last change
               </div>
               <div>current selection (debug): {{ ui.selection }}</div>
-              <select
-                style="width: 100%"
-                @change="ui.message = $event.target.value"
-              >
+              <select class="w-full" @change="ui.message = $event.target.value">
                 <option></option>
                 <option
                   v-for="(item, i) in Object.keys(summary)"
@@ -72,7 +68,7 @@
               <textarea
                 placeholder="your message goes here"
                 rows="5"
-                style="width: 100%"
+                class="w-full"
                 v-model="ui.message"
               >
               </textarea>
@@ -80,20 +76,17 @@
             <div><button @click="save">save</button></div>
           </div>
 
-          <div style="flex-basis: 25%; font-weight: bold">
+          <div class="basis-1/4 font-bold">
             {{ totalTime.toFixed(2) }} hours
           </div>
-          <div style="flex-basis: 75%; font-weight: bold">Total Time</div>
+          <div class="basis-3/4 font-bold">Total Time</div>
 
           <template v-for="item in Object.keys(summary)">
-            <div style="flex-basis: 25%">
+            <div class="basis-1/4">
               {{ summary[item].sum.toFixed(2) }} hours
             </div>
-            <div style="flex-basis: 75%">
-              <button
-                style="height: 15px; font-size: 8px; vertical-align: middle"
-                @click="copyText(item)"
-              >
+            <div class="basis-1/4">
+              <button class="h-4 text-xs align-middle" @click="copyText(item)">
                 copy
               </button>
               {{ item }}
@@ -263,8 +256,8 @@ export default Vue.extend({
       navigator.clipboard.writeText(text)
     },
     // if it exists, get the message property based on the array position of the timestamp
-    getMessage(idx: number) {
-      return this.ui.messages.find((x) => x.idx === idx)?.message
+    getMessage(idx: number): string {
+      return this.ui.messages.find((x) => x.idx === idx)?.message ?? ''
     },
     // restore to the previous version on the stack
     undoLast() {
@@ -374,26 +367,6 @@ export default Vue.extend({
   border-width: 1px;
   border-style: solid;
   position: absolute;
-}
-
-.flex-container {
-  display: flex;
-}
-
-.flex-column {
-  flex: 1;
-  padding: 10px;
-}
-
-.cell {
-  margin: 5px;
-  padding: 5px;
-  /* background-color: green; */
-  width: 100%;
-  border-radius: 10px;
-  border-color: black;
-  border-style: solid;
-  border-width: thin;
 }
 
 .highlight {
