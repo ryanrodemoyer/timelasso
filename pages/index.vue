@@ -12,18 +12,17 @@
     <!-- <pre>{{ ui }}</pre> -->
 
     <div class="flex flex-col-reverse sm:flex-row">
-      <div class="flex-1 p-2.5">
+      <div class="flex-1">
         <div
           v-for="(time, i) in config.times"
           :key="i"
           @mousedown="mousedown($event, i)"
           @mouseup="mouseup($event, i)"
           @mouseover="mouseover($event, i)"
-          class="m-1 p-1 w-full border border-black rounded-lg border-solid"
+          class="m-1 p-1 basis-full border border-black rounded-lg border-solid"
           :style="getRGB(i, getMessage(i))"
           :class="{
             highlight: ui.selection.includes(i),
-
             disableHighlight: mouseDown,
             danger: getMessage(i) && ui.selection.includes(i),
           }"
