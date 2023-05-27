@@ -50,7 +50,12 @@
                 <button @click="undoLast">undo</button> undo the last change
               </div>
               <div>current selection (debug): {{ ui.selection }}</div>
-              <select class="w-full" @change="ui.message = $event.target.value">
+              <select
+                class="w-full"
+                v-model="ui.dropdown"
+                @change="changeMessage($event.target.value)"
+                ref="messageDropdown"
+              >
                 <option></option>
                 <option
                   v-for="(item, i) in Object.keys(summary)"
@@ -108,6 +113,7 @@ type MessageRecord = { idx: number; message: string }
 
 type UIRecord = {
   message: string
+  dropdown: string
   selection: number[]
   messages: MessageRecord[]
 }
@@ -179,6 +185,7 @@ export default Vue.extend({
       },
       ui: {
         message: '',
+        dropdown: '',
         selection: [],
         messages: [],
       },
@@ -215,6 +222,9 @@ export default Vue.extend({
   },
 
   methods: {
+    changeMessage(text: string) {
+      this.ui.message = text
+    },
     buildSummary() {
       let green = 255
       const res = this.ui.messages
@@ -268,6 +278,7 @@ export default Vue.extend({
 
       this.ui = {
         message: '',
+        dropdown: '',
         selection: [],
         messages: [],
       }
@@ -286,6 +297,7 @@ export default Vue.extend({
         )
       this.ui.selection = []
       this.ui.message = ''
+      this.ui.dropdown = ''
     },
     // clear local storage
     clearCache() {
