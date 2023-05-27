@@ -11,8 +11,7 @@
     </div>
     <!-- <pre>{{ ui }}</pre> -->
 
-    <!-- <div class="grid grid-cols-1 sm:grid-cols-2"> -->
-    <div class="flex">
+    <div class="flex flex-col-reverse sm:flex-row">
       <div class="flex-1 p-2.5">
         <div
           v-for="(time, i) in config.times"
@@ -33,7 +32,7 @@
         </div>
       </div>
       <div class="flex-1">
-        <div class="flex flex-wrap fixed p-4">
+        <div class="flex flex-wrap relative p-4 sm:fixed">
           <div class="basis-full mb-2.5">
             <div class="mb-0.5">
               <div>
