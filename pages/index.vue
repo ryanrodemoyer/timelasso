@@ -85,8 +85,11 @@
             <div class="basis-1/4">
               {{ summary[item].sum.toFixed(2) }} hours
             </div>
-            <div class="basis-1/4">
-              <button class="h-4 text-xs align-middle" @click="copyText(item)">
+            <div class="basis-3/4">
+              <button
+                style="height: 15px; font-size: 8px; vertical-align: middle"
+                @click="copyText(item)"
+              >
                 copy
               </button>
               {{ item }}
@@ -94,8 +97,6 @@
           </template>
         </div>
       </div>
-
-      <div></div>
     </div>
     <div id="overlay" ref="overlay" :style="overlayStyle"></div>
   </div>
