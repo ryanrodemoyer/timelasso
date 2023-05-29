@@ -5,9 +5,11 @@
         lasso (click and drag, or just click!) to create a group of time cells
         and then add a description
       </h2>
-      <p>green cells have a logged entry</p>
-      <p>purple cells will be updated with your message</p>
-      <p>red cells will be cleared</p>
+      <div class="landscape:hidden">
+        <p>green cells have a logged entry</p>
+        <p>purple cells will be updated with your message</p>
+        <p>red cells will be cleared</p>
+      </div>
     </div>
     <!-- <pre>{{ ui }}</pre> -->
 
@@ -16,13 +18,18 @@
       @touchmove="touchmove($event)"
     >
       <div class="flex-1" id="cells">
+        <div class="portrait:hidden">
+          <p>green cells have a logged entry</p>
+          <p>purple cells will be updated with your message</p>
+          <p>red cells will be cleared</p>
+        </div>
         <div
           v-for="(time, i) in config.times"
           :key="i"
           @mousedown="mousedown($event, i)"
           @mouseover="mouseover($event, i)"
           :data-idx="i"
-          class="m-1 p-1 basis-full border border-black rounded-lg border-solid"
+          class="mt-1 mb-1 ml-10 mr-10 sm:m-1 p-1 basis-full border border-black rounded-lg border-solid"
           :style="getRGB(i, getMessage(i))"
           :class="{
             highlight: ui.selection.includes(i),
@@ -34,7 +41,7 @@
         </div>
       </div>
       <div class="flex-1">
-        <div class="flex flex-wrap relative p-4 sm:fixed">
+        <div class="flex flex-wrap relative p-4 sm:fixed h-full">
           <div class="basis-full mb-2.5">
             <div class="mb-0.5">
               <div>
