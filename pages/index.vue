@@ -226,10 +226,13 @@ export default Vue.extend({
       deep: true,
     },
     touchDown(newVal, oldVal) {
-      if (newVal) {
-        document.querySelector('body').style.overflow = 'hidden'
-      } else {
-        document.querySelector('body').style.overflow = 'auto'
+      const body = document.querySelector('body')
+      if (body) {
+        if (newVal) {
+          body.style.overflow = 'hidden'
+        } else {
+          body.style.overflow = 'auto'
+        }
       }
     },
   },
