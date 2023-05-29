@@ -11,14 +11,17 @@
     </div>
     <!-- <pre>{{ ui }}</pre> -->
 
-    <div class="flex flex-col-reverse sm:flex-row">
-      <div class="flex-1">
+    <div
+      class="flex flex-col-reverse sm:flex-row"
+      @touchmove="touchmove($event)"
+    >
+      <div class="flex-1" id="cells">
         <div
           v-for="(time, i) in config.times"
           :key="i"
           @mousedown="mousedown($event, i)"
-          @mouseup="mouseup($event, i)"
           @mouseover="mouseover($event, i)"
+          :data-idx="i"
           class="m-1 p-1 basis-full border border-black rounded-lg border-solid"
           :style="getRGB(i, getMessage(i))"
           :class="{
@@ -108,7 +111,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { times } from './times'
-
 type MessageRecord = { idx: number; message: string }
 
 type UIRecord = {
@@ -148,6 +150,8 @@ type ConfigRecord = {
 
 type DataRecord = {
   mouseDown: boolean
+  touchDown: boolean
+  lastTouchMove: number
   config: ConfigRecord
   undo: string[]
   overlay: OverlayRecord
@@ -160,6 +164,8 @@ export default Vue.extend({
   data(): DataRecord {
     return {
       mouseDown: false,
+      touchDown: false,
+      lastTouchMove: -1,
       config: {
         times: times,
       },
@@ -219,6 +225,13 @@ export default Vue.extend({
       },
       deep: true,
     },
+    touchDown(newVal, oldVal) {
+      if (newVal) {
+        document.querySelector('body').style.overflow = 'hidden'
+      } else {
+        document.querySelector('body').style.overflow = 'auto'
+      }
+    },
   },
 
   methods: {
@@ -270,7 +283,12 @@ export default Vue.extend({
     },
     // restore to the previous version on the stack
     undoLast() {
-      this.ui = JSON.parse(this.undo.pop() || '{}')
+      if (this.undo) {
+        this.ui = JSON.parse(
+          this.undo.pop() ||
+            "{message: '',dropdown: '',selection: [],messages: [],}"
+        )
+      }
     },
     // reset the settings to the default values
     reset() {
@@ -323,7 +341,7 @@ export default Vue.extend({
       }
     },
     legacyMouseOver(idx: number) {
-      if (this.mouseDown) {
+      if (this.mouseDown || this.touchDown) {
         if (!this.ui.selection.includes(idx)) {
           this.ui.selection.push(idx)
         } else {
@@ -352,6 +370,28 @@ export default Vue.extend({
     mouseover(e: MouseEvent, idx: number) {
       this.legacyMouseOver(idx)
     },
+    touchmove(e: TouchEvent) {
+      const touch = e.touches[0]
+      const x = touch.clientX
+      const y = touch.clientY
+
+      const cells = Array.from(document.querySelectorAll('#cells div'))
+      const cell = cells.find(
+        (c) =>
+          c.getBoundingClientRect().left < x &&
+          c.getBoundingClientRect().right > x &&
+          c.getBoundingClientRect().top < y &&
+          c.getBoundingClientRect().bottom > y
+      )
+
+      if (cell) {
+        const idx = parseInt(cell.getAttribute('data-idx') || '0')
+        if (idx !== this.lastTouchMove) {
+          this.legacyMouseOver(idx)
+          this.lastTouchMove = idx
+        }
+      }
+    },
   },
   mounted() {
     // listen for the global mousedown event
@@ -362,6 +402,16 @@ export default Vue.extend({
 
     document.addEventListener('mouseup', () => {
       this.mouseDown = false
+    })
+
+    document.addEventListener('touchstart', () => {
+      console.log('touchstart')
+      this.touchDown = true
+    })
+
+    document.addEventListener('touchend', () => {
+      console.log('touchend')
+      this.touchDown = false
     })
 
     // retrieve the last state from the browser and restore into the app
