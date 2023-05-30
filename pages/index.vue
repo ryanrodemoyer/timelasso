@@ -1,43 +1,40 @@
 <template>
-  <div>
+  <div style="overscroll-behavior: none; overflow: scroll">
     <div>
       <h2>
         lasso (click and drag, or just click!) to create a group of time cells
         and then add a description
       </h2>
-      <div class="landscape:hidden">
-        <p>green cells have a logged entry</p>
-        <p>purple cells will be updated with your message</p>
-        <p>red cells will be cleared</p>
-      </div>
+      <HelpText class="landscape:hidden" />
     </div>
-    <!-- <pre>{{ ui }}</pre> -->
 
-    <div
-      class="flex flex-col-reverse sm:flex-row"
-      @touchmove="touchmove($event)"
-    >
+    <div class="flex flex-col-reverse sm:flex-row">
       <div class="flex-1" id="cells">
-        <div class="portrait:hidden">
-          <p>green cells have a logged entry</p>
-          <p>purple cells will be updated with your message</p>
-          <p>red cells will be cleared</p>
-        </div>
+        <HelpText class="portrait:hidden" />
         <div
-          v-for="(time, i) in config.times"
-          :key="i"
-          @mousedown="mousedown($event, i)"
-          @mouseover="mouseover($event, i)"
-          :data-idx="i"
-          class="mt-1 mb-1 ml-10 mr-10 sm:m-1 p-1 basis-full border border-black rounded-lg border-solid"
-          :style="getRGB(i, getMessage(i))"
-          :class="{
-            highlight: ui.selection.includes(i),
-            disableHighlight: mouseDown,
-            danger: getMessage(i) && ui.selection.includes(i),
-          }"
+          class="overflow-y-scroll pl-10 pr-10 sm:overflow-y-visible"
+          id="scrollContainer"
+          ref="scrollContainer"
         >
-          {{ time }} ({{ i }}) - {{ getMessage(i) }}
+          <div
+            v-for="(time, i) in config.times"
+            :key="i"
+            @mousedown="mousedown($event, i)"
+            @mouseover="mouseover($event, i)"
+            @touchstart="touchDown = true"
+            @touchend="touchDown = false"
+            @touchmove="touchmove($event)"
+            :data-idx="i"
+            class="mt-1 mb-1 sm:m-1 p-1 basis-full border border-black rounded-lg border-solid"
+            :style="getRGB(i, getMessage(i))"
+            :class="{
+              highlight: ui.selection.includes(i),
+              disableHighlight: mouseDown,
+              danger: getMessage(i) && ui.selection.includes(i),
+            }"
+          >
+            {{ time }} ({{ i }}) - {{ getMessage(i) }}
+          </div>
         </div>
       </div>
       <div class="flex-1">
@@ -236,9 +233,13 @@ export default Vue.extend({
       const body = document.querySelector('body')
       if (body) {
         if (newVal) {
-          body.style.overflow = 'hidden'
+          if (this.$refs.scrollContainer)
+            (this.$refs.scrollContainer as HTMLElement).style.overflow =
+              'hidden'
         } else {
-          body.style.overflow = 'auto'
+          if (this.$refs.scrollContainer) {
+            ;(this.$refs.scrollContainer as HTMLElement).style.overflow = 'auto'
+          }
         }
       }
     },
@@ -385,7 +386,9 @@ export default Vue.extend({
       const x = touch.clientX
       const y = touch.clientY
 
-      const cells = Array.from(document.querySelectorAll('#cells div'))
+      const cells = Array.from(
+        document.querySelectorAll('#scrollContainer > div')
+      )
       const cell = cells.find(
         (c) =>
           c.getBoundingClientRect().left < x &&
@@ -402,6 +405,15 @@ export default Vue.extend({
         }
       }
     },
+    setScrollableContainerHeight() {
+      const div = document.getElementById('scrollContainer')
+      if (div) {
+        const windowHeight = window.innerHeight
+        const divTop = div.getBoundingClientRect().top
+        const divHeight = windowHeight - divTop
+        div.style.height = `${divHeight}px`
+      }
+    },
   },
   mounted() {
     // listen for the global mousedown event
@@ -415,14 +427,22 @@ export default Vue.extend({
     })
 
     document.addEventListener('touchstart', () => {
-      console.log('touchstart')
-      this.touchDown = true
+      // console.log('touchstart')
+      // this.touchDown = true
     })
 
     document.addEventListener('touchend', () => {
-      console.log('touchend')
-      this.touchDown = false
+      // console.log('touchend')
+      // this.touchDown = false
     })
+
+    window.addEventListener('resize', () => {
+      console.log('resize')
+
+      this.setScrollableContainerHeight()
+    })
+
+    this.setScrollableContainerHeight()
 
     // retrieve the last state from the browser and restore into the app
     const schedule = window.localStorage.getItem('schedule')
