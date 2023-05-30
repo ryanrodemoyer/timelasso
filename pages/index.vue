@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="flex-1">
-        <div class="flex flex-wrap relative p-4 sm:fixed h-full">
+        <div class="flex flex-wrap relative p-4 sm:fixed">
           <div class="basis-full mb-2.5">
             <div class="mb-0.5">
               <div>
