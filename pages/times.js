@@ -1,4 +1,8 @@
 export const times = [
+  '6:00 AM',
+  '6:15 AM',
+  '6:30 AM',
+  '6:45 AM',
   '7:00 AM',
   '7:15 AM',
   '7:30 AM',
@@ -43,4 +47,8 @@ export const times = [
   '5:15 PM',
   '5:30 PM',
   '5:45 PM',
+  '6:00 PM',
+  '6:15 PM',
+  '6:30 PM',
+  '6:45 PM',
 ]
